@@ -1,0 +1,10 @@
+label: dos
+label-id: 0x25c915c4
+device: /dev/nbd0
+unit: sectors
+sector-size: 512
+
+/dev/nbd0p1 : start=       40959, size=       38913, type=83
+/dev/nbd0p2 : start=      104448, size=     1024000, type=83
+/dev/nbd0p3 : start=     1128448, size=      262144, type=83
+/dev/nbd0p4 : start=     1390592, size=     6998016, type=83
