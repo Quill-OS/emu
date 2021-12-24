@@ -53,7 +53,7 @@ populate_sd() {
 	sudo openssl dgst -sha256 -sign keys/private.pem -out "${USER_MOUNT}/gui_rootfs.isa.dgst" "${USER_MOUNT}/gui_rootfs.isa"
 	CURRENT_VERSION=$(wget -q -O - "${SERVER}/bundles/inkbox/native/update/ota_current")
 	echo "${CURRENT_VERSION}" | sudo tee -a "${USER_MOUNT}/update/version" > /dev/null
-	cd "${USER_MOUNT}/update" && sudo wget "${SERVER}/bundles/inkbox/native/update/${CURRENT_VERSION}/emu/inkbox-update-${CURRENT_VERSION}.upd.isa" && cd "${GITDIR}"
+	cd "${USER_MOUNT}/update" && sudo wget "${SERVER}/bundles/inkbox/native/update/${CURRENT_VERSION}/emu/inkbox-update-${CURRENT_VERSION}.upd.isa" -O "update.isa" && cd "${GITDIR}"
 
 	# Build kernel
 	cd "${GITDIR}/out"
@@ -65,17 +65,17 @@ populate_sd() {
 		cd "${KERNELDIR}"
 	fi
 
-	env GITDIR="${KERNELDIR}" TOOLCHAINDIR="${GITDIR}/toolchain/armv7l-linux-musleabihf-cross" THREADS=$(($(nproc)*2)) TARGET=armv7l-linux-musleabihf scripts/build_kernel.sh emu root
+	env GITDIR="${KERNELDIR}" TOOLCHAINDIR="${KERNELDIR}/toolchain/armv7l-linux-musleabihf-cross" THREADS=$(($(nproc)*2)) TARGET=armv7l-linux-musleabihf scripts/build_kernel.sh emu root
 	cp kernel/out/emu/zImage-root kernel/linux-5.15.10/arch/arm/boot/dts/vexpress-v2p-ca9.dtb "${GITDIR}/out/boot"
-	echo -n "#!/bin/bash\nqemu-system-arm -M vexpress-a9 -kernel ${GITDIR}/out/boot/zImage-root -dtb ${GITDIR}/out/boot/vexpress-v2p-ca9.dtb -append 'console=ttyAMA0 root=/dev/ram0 rdinit=/sbin/init rootfstype=ramfs' -serial mon:stdio -sd '${GITDIR}/out/sd.img' -m 1G -smp 4 -net nic -net user,hostfwd=tcp::5901-:5900\n" > "${GITDIR}/out/boot/qemu-boot"
+	echo -e '#!/bin/bash\nqemu-system-arm -M vexpress-a9 -kernel "${GITDIR}/out/boot/zImage-root" -dtb "${GITDIR}/out/boot/vexpress-v2p-ca9.dtb" -append "console=ttyAMA0 root=/dev/ram0 rdinit=/sbin/init rootfstype=ramfs" -serial mon:stdio -sd "${GITDIR}/out/sd.img" -m 1G -smp 4 -net nic -net user,hostfwd=tcp::5901-:5900' > "${GITDIR}/out/boot/qemu-boot"
 }
 
 umount_fs() {
 	sync
-	sudo umount "${BOOT_MOUNT}"
-	sudo umount "${RECOVERYFS_MOUNT}"
-	sudo umount "${ROOTFS_MOUNT}"
-	sudo umount "${USER_MOUNT}"
+	sudo umount -l -f "${BOOT_MOUNT}"
+	sudo umount -l -f "${RECOVERYFS_MOUNT}"
+	sudo umount -l -f "${ROOTFS_MOUNT}"
+	sudo umount -l -f "${USER_MOUNT}"
 	sudo qemu-nbd --disconnect /dev/nbd0
 }
 
