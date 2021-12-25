@@ -31,6 +31,7 @@ populate_sd() {
 
 	# Boot partition
 	sudo mkdir -p "${BOOT_MOUNT}/flags"
+	echo "true" | sudo tee -a "${BOOT_MOUNT}/flags/FIRST_BOOT" > /dev/null
 
 	# Root filesystem
 	# Yes, this is meant to be run as root
