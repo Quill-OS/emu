@@ -47,7 +47,7 @@ populate_sd() {
 	# Recovery partition
 	# No need for a full recovery program, we just copy the necessary overlaymount-rootfs squashfs bundle needed by the initrd at startup
 	sudo cp sd/overlaymount-rootfs.squashfs sd/overlaymount-rootfs.squashfs.dgst "${RECOVERYFS_MOUNT}"
-	
+
 	# User storage partition
 	cat sd/user.sqsh.* > sd/user.sqsh
 	sudo unsquashfs -f -d "${USER_MOUNT}" sd/user.sqsh
@@ -66,6 +66,7 @@ populate_sd() {
 		cd "${KERNELDIR}"
 	fi
 
+	env GITDIR="${KERNELDIR}" scripts/make_devicenodes.sh
 	env GITDIR="${KERNELDIR}" TOOLCHAINDIR="${KERNELDIR}/toolchain/armv7l-linux-musleabihf-cross" THREADS=$(($(nproc)*2)) TARGET=armv7l-linux-musleabihf scripts/build_kernel.sh emu root
 	cp kernel/out/emu/zImage-root kernel/linux-5.15.10/arch/arm/boot/dts/vexpress-v2p-ca9.dtb "${GITDIR}/out/boot"
 	echo -e '#!/bin/bash\ncd ${GITDIR}\nqemu-system-arm -M vexpress-a9 -kernel "${GITDIR}/out/boot/zImage-root" -dtb "${GITDIR}/out/boot/vexpress-v2p-ca9.dtb" -append "console=ttyAMA0 root=/dev/ram0 rdinit=/sbin/init rootfstype=ramfs" -serial mon:stdio -sd "${GITDIR}/out/sd.img" -m 1G -smp 4 -net nic -net user,hostfwd=tcp::5901-:5900' > "${GITDIR}/out/boot/qemu-boot"
