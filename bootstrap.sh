@@ -54,7 +54,7 @@ populate_sd() {
 	sudo openssl dgst -sha256 -sign keys/private.pem -out "${USER_MOUNT}/gui_rootfs.isa.dgst" "${USER_MOUNT}/gui_rootfs.isa"
 	CURRENT_VERSION=$(wget -q -O - "${SERVER}/bundles/inkbox/native/update/ota_current")
 	echo "${CURRENT_VERSION}" | sudo tee -a "${USER_MOUNT}/update/version" > /dev/null
-	cd "${USER_MOUNT}/update" && sudo wget "${SERVER}/bundles/inkbox/native/update/${CURRENT_VERSION}/emu/inkbox-update-${CURRENT_VERSION}.upd.isa" -O "update.isa" && cd "${GITDIR}"
+	cd "${USER_MOUNT}/update" && sudo wget "${SERVER}/bundles/inkbox/native/update/${CURRENT_VERSION}/emu/update-${CURRENT_VERSION}.upd.isa" -O "update.isa" && cd "${GITDIR}"
 
 	# Build kernel
 	cd "${GITDIR}/out"
