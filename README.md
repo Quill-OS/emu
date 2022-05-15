@@ -31,7 +31,7 @@ If everything goes well, you should have something like this:
 
 to launch self compiled inkbox on it, run something like this:
 ```
-rm /tmp/inkbox; wget 192.168.2.1:8000/inkbox -O /tmp/inkbox; chmod +x /tmp/inkbox; umount -l -f /kobo/mnt/onboard/.adds/inkbox/inkbox-bin; mount --bind /tmp/inkbox /kobo/mnt/onboard/.adds/inkbox/inkbox-bin; killall inkbox-bin inkbox inkbox.sh; env QT_QPA_PLATFORM=kobo chroot /kobo /mnt/onboard/.adds/inkbox/inkbox.sh
+rm /tmp/inkbox; wget 192.168.2.1:8000/inkbox -O /tmp/inkbox; chmod +x /tmp/inkbox; umount -l -f /kobo/mnt/onboard/.adds/inkbox/inkbox-bin; mount --bind /tmp/inkbox /kobo/mnt/onboard/.adds/inkbox/inkbox-bin; killall inkbox-bin inkbox inkbox.sh; env QT_QPA_PLATFORM=vnc:size=768x1024 chroot /kobo /mnt/onboard/.adds/inkbox/inkbox.sh
 ```
 
 to launch other things, on the emulator:
