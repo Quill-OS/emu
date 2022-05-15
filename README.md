@@ -66,5 +66,5 @@ killall simple-http-server;
 - SSH to the emulator doesn't work, but it's enabled anyway. Nobody knows why. SSH from the emulator works.
 - Make sure while making the emulator that every command using `sudo` has worked
 - If something doesn't work with the kernel, symlink `/home/build/inkbox/kernel` to `emu/out/kernel`
-- Emulator performance depends on CPU frequency, make it higher/maximum to achieve better performance. Lowering the CPU cores number in the `qemu-boot` script (`-smp`) may help. Don't expect fabulous results if your hardware is a crappy i3 CPU from 2013, for example.
+- Emulator performance depends on CPU frequency, make it higher/maximum to achieve better performance. Lowering the CPU cores number in the `qemu-boot` script (`-smp`) may help. Don't expect fabulous results if your hardware is a low-end i3 CPU from 2013, for example ;)
 - To download heavy files/directories use `-no-http-keep-alive --no-cache` with `wget`. Example: `wget -no-http-keep-alive --no-cache --no-cookies -e robots=off -R "index.html*" --recursive --no-parent http://your.http.servers.ipaddr/`
