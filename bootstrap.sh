@@ -54,6 +54,7 @@ populate_sd() {
 	sudo openssl dgst -sha256 -sign keys/private.pem -out "${USER_MOUNT}/gui_rootfs.isa.dgst" "${USER_MOUNT}/gui_rootfs.isa"
 	CURRENT_VERSION=$(wget -q -O - "${SERVER}/bundles/inkbox/native/update/ota_current")
 	echo "${CURRENT_VERSION}" | sudo tee -a "${USER_MOUNT}/update/version" > /dev/null
+	echo "-1" | sudo tee -a "${USER_MOUNT}/config/15-sleep_timeout/config" > /dev/null
 	cd "${USER_MOUNT}/update" && sudo wget "${SERVER}/bundles/inkbox/native/update/${CURRENT_VERSION}/emu/update-${CURRENT_VERSION}.upd.isa" -O "update.isa" && cd "${GITDIR}"
 
 	# Build kernel
@@ -69,7 +70,7 @@ populate_sd() {
 	env GITDIR="${KERNELDIR}" scripts/make_devicenodes.sh
 	env GITDIR="${KERNELDIR}" TOOLCHAINDIR="${KERNELDIR}/toolchain/armv7l-linux-musleabihf-cross" THREADS=$(($(nproc)*2)) TARGET=armv7l-linux-musleabihf scripts/build_kernel.sh emu root
 	cp kernel/out/emu/zImage-root kernel/linux-5.15.10/arch/arm/boot/dts/vexpress-v2p-ca9.dtb "${GITDIR}/out/boot"
-	echo -e '#!/bin/bash\ncd ${GITDIR}\nqemu-system-arm -M vexpress-a9 -kernel "${GITDIR}/out/boot/zImage-root" -dtb "${GITDIR}/out/boot/vexpress-v2p-ca9.dtb" -append "console=ttyAMA0 root=/dev/ram0 rdinit=/sbin/init rootfstype=ramfs" -serial mon:stdio -sd "${GITDIR}/out/sd.img" -m 1G -smp 4 -net nic -net user,hostfwd=tcp::5901-:5900' > "${GITDIR}/out/boot/qemu-boot"
+	echo -e '#!/bin/bash\ncd ${GITDIR}\nqemu-system-arm -M vexpress-a9 -kernel "${GITDIR}/out/boot/zImage-root" -dtb "${GITDIR}/out/boot/vexpress-v2p-ca9.dtb" -append "console=ttyAMA0 root=/dev/ram0 rdinit=/sbin/init rootfstype=ramfs" -serial mon:stdio -sd "${GITDIR}/out/sd.img" -m 1G -smp 4 -net nic -net user,hostfwd=tcp::5901-:5900,hostfwd=tcp::5555-:23,hostfwd=tcp::6666-:22' > "${GITDIR}/out/boot/qemu-boot"
 	chmod +x "${GITDIR}/out/boot/qemu-boot"
 }
 
