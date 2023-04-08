@@ -67,4 +67,4 @@ killall busybox;
 - If something doesn't work with the kernel, symlink `/home/build/inkbox/kernel` to `emu/out/kernel`
 - Emulator performance depends on CPU frequency, make it higher/maximum to achieve better performance. Lowering the CPU cores number in the `qemu-boot` script (`-smp`) may help. Don't expect fabulous results if your hardware is a low-end i3 CPU from 2013, for example ;)
 - To download heavy files/directories use `-no-http-keep-alive --no-cache` with `wget`. Example: `wget -no-http-keep-alive --no-cache --no-cookies -e robots=off -R "index.html*" --recursive --no-parent http://your.http.servers.ipaddr/`
-- network can have problems with the first launch of qemu. Close it and relaunch, it should be fine
+- Network can have problems at the first launch of QEMU. Close it and relaunch, it should be fine.
