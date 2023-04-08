@@ -47,16 +47,15 @@ telnet 127.0.0.1 5555
 If you want to use the 'remote debugging' feature of Qt Creator, make it use a script like this:
 ```bash
 #!/bin/bash
-# Install this using cargo, or use `busybox httpd -f -p 8000`
-killall simple-http-server;
-~/.cargo/bin/simple-http-server &
+killall busybox;
+busybox httpd -f -p 0.0.0.0:8000 -vv &
 sleep 1;
 
 ( sleep 0.5; echo "ifsctl mnt rootfs rw"; sleep 0.4 )  | telnet 127.0.0.1 5555 2>/dev/null 1>/dev/null
 ( sleep 0.5; echo "rm /kobo/tmp/exec"; sleep 10 ) | telnet 127.0.0.1 5555 2>/dev/null 1>/dev/null
-( sleep 0.5; echo "wget 192.168.88.22:8000/exec -O /kobo/tmp/exec;"; sleep 15 )  | telnet 127.0.0.1 5555 2>/dev/null 1>/dev/null # Increase sleep time if it doesn't manage to download the whole binary
+( sleep 0.5; echo "wget 192.168.0.25:8000/exec -O /kobo/tmp/exec;"; sleep 15 )  | telnet 127.0.0.1 5555 2>/dev/null 1>/dev/null # Increase sleep time if it doesn't manage to download the whole binary
 ( sleep 0.5; echo "chmod +x /kobo/tmp/exec"; sleep 0.5 )  | telnet 127.0.0.1 5555 2>/dev/null 1>/dev/null
-killall simple-http-server;
+killall busybox;
 ( sleep 0.5; echo "/kobo/launch_app.sh"; sleep infinity ) | telnet 127.0.0.1 5555 2>/dev/null
 # Look: https://github.com/Szybet/kobo-nia-audio/blob/main/apps-on-kobo/launch_app.sh
 # But change QT_QPA_PLATFORM to QT_QPA_PLATFORM=vnc:size=768x1024
@@ -68,3 +67,4 @@ killall simple-http-server;
 - If something doesn't work with the kernel, symlink `/home/build/inkbox/kernel` to `emu/out/kernel`
 - Emulator performance depends on CPU frequency, make it higher/maximum to achieve better performance. Lowering the CPU cores number in the `qemu-boot` script (`-smp`) may help. Don't expect fabulous results if your hardware is a low-end i3 CPU from 2013, for example ;)
 - To download heavy files/directories use `-no-http-keep-alive --no-cache` with `wget`. Example: `wget -no-http-keep-alive --no-cache --no-cookies -e robots=off -R "index.html*" --recursive --no-parent http://your.http.servers.ipaddr/`
+- Network can have problems at the first launch of QEMU. Close it and relaunch, it should be fine.
