@@ -1,3 +1,6 @@
+### Read all the problems at the end of the readme. It's not worth your time probably and not ours for sure so we abandoned the emulator, it will not build fluently without some major problems and it will run like crap anyway because of those network issues. Sad.
+You are free to repair this mess, but it's really qemu fault... We won't provide support, maybe only some tips and directions how to repair the build process
+
 # emu
 
 InkBox OS emulator. Based on `qemu-system-arm` with the `vexpress-a9` board.
